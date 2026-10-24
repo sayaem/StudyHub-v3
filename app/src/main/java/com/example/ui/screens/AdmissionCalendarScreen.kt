@@ -189,15 +189,15 @@ fun AdmissionCalendarScreen(
                                 .clip(RoundedCornerShape(12.dp))
                                 .clickable { selectedFilter = filter },
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                             ),
-                            border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                            border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                         ) {
                             Text(
                                 text = filter,
                                 fontSize = 12.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                             )
                         }
@@ -221,7 +221,7 @@ fun AdmissionCalendarScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp)
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                         shape = RoundedCornerShape(20.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
@@ -235,10 +235,10 @@ fun AdmissionCalendarScreen(
                                 modifier = Modifier
                                     .size(54.dp)
                                     .clip(CircleShape)
-                                    .background(BrandPaleTeal),
+                                    .background(MaterialTheme.colorScheme.primaryContainer),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(Icons.Default.School, contentDescription = null, tint = BrandTeal, modifier = Modifier.size(28.dp))
+                                Icon(Icons.Default.School, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
                             }
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
@@ -252,7 +252,7 @@ fun AdmissionCalendarScreen(
                             Text(
                                 text = "Track application deadlines, admit cards, and exam dates in one place.",
                                 style = MaterialTheme.typography.bodySmall.copy(
-                                    color = TextSecondary,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                                 )
                             )
@@ -287,7 +287,7 @@ fun AdmissionCalendarScreen(
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(20.dp))
                                     .clickable { selectedTargetDetail = target }
-                                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                                 shape = RoundedCornerShape(20.dp),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -332,14 +332,14 @@ fun AdmissionCalendarScreen(
                                             )
                                             Text(
                                                 text = "${target.category} • ${target.cycleLabel}${target.programUnit?.let { " • $it" } ?: ""}",
-                                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             )
                                         }
 
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    if (isUrgent) Color(0xFFFEE2E2) else BrandLightBlue,
+                                                    if (isUrgent) StatusDanger.copy(alpha = 0.15f) else MaterialTheme.colorScheme.secondaryContainer,
                                                     RoundedCornerShape(8.dp)
                                                 )
                                                 .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -348,7 +348,7 @@ fun AdmissionCalendarScreen(
                                                 text = daysLeftStr,
                                                 fontSize = 11.sp,
                                                 fontWeight = FontWeight.Bold,
-                                                color = if (isUrgent) StatusDanger else BrandBlue
+                                                color = if (isUrgent) StatusDanger else MaterialTheme.colorScheme.secondary
                                             )
                                         }
                                     }
@@ -470,7 +470,7 @@ fun ApplicationDetailsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -483,10 +483,10 @@ fun ApplicationDetailsScreen(
                             modifier = Modifier
                                 .size(50.dp)
                                 .clip(RoundedCornerShape(14.dp))
-                                .background(BrandPaleTeal),
+                                .background(MaterialTheme.colorScheme.primaryContainer),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(Icons.Default.School, contentDescription = null, tint = BrandTeal, modifier = Modifier.size(28.dp))
+                            Icon(Icons.Default.School, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
                         }
                         Spacer(modifier = Modifier.width(14.dp))
                         Column(modifier = Modifier.weight(1f)) {
@@ -499,12 +499,12 @@ fun ApplicationDetailsScreen(
                             )
                             Text(
                                 text = "${target.category} • ${target.cycleLabel}",
-                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                         Box(
                             modifier = Modifier
-                                .background(BrandPaleTeal, RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
@@ -512,7 +512,7 @@ fun ApplicationDetailsScreen(
                                     .replaceFirstChar { it.uppercase() },
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = BrandTeal
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                     }
@@ -523,7 +523,7 @@ fun ApplicationDetailsScreen(
                         text = "Days remaining: $daysLeft",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = BrandDeepTeal
+                            color = MaterialTheme.colorScheme.primary
                         )
                     )
                 }
@@ -542,7 +542,7 @@ fun ApplicationDetailsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -570,7 +570,7 @@ fun ApplicationDetailsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {

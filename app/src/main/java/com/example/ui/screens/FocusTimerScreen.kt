@@ -123,20 +123,23 @@ fun FocusTimerScreen(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(BrandPaleTeal)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Text(
                     text = activeSubject?.name ?: "All Subjects",
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.Bold,
-                        color = BrandDeepTeal
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        val ringTrackColor = MaterialTheme.colorScheme.surfaceVariant
+        val ringProgressColor = MaterialTheme.colorScheme.primary
 
         // Large Circular Timer Display
         Box(
@@ -151,7 +154,7 @@ fun FocusTimerScreen(
 
                 // Background Ring
                 drawArc(
-                    color = BrandPaleTeal,
+                    color = ringTrackColor,
                     startAngle = -90f,
                     sweepAngle = 360f,
                     useCenter = false,
@@ -162,7 +165,7 @@ fun FocusTimerScreen(
 
                 // Animated Progress Ring
                 drawArc(
-                    color = BrandTeal,
+                    color = ringProgressColor,
                     startAngle = -90f,
                     sweepAngle = progress * 360f,
                     useCenter = false,
@@ -232,21 +235,21 @@ fun FocusTimerScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Button(
                     onClick = onResetTimer,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF1F5F9)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Icon(Icons.Default.Refresh, contentDescription = null, tint = TextSecondary, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Refresh, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Reset", color = TextSecondary)
+                    Text("Reset", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Button(
                     onClick = onFinishTimer,
-                    colors = ButtonDefaults.buttonColors(containerColor = BrandDeepTeal),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Icon(Icons.Default.Stop, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Stop, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Finish Now", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Finish Now", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -272,11 +275,11 @@ fun FocusTimerScreen(
                         .clickable { onSelectDuration(mins, type) }
                         .border(
                             width = if (isSelected) 1.5.dp else 1.dp,
-                            color = if (isSelected) BrandTeal else BorderSubtleLight,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(12.dp)
                         ),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) BrandPaleTeal else MaterialTheme.colorScheme.surface
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Box(
@@ -289,7 +292,7 @@ fun FocusTimerScreen(
                             text = label,
                             fontSize = 11.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) BrandDeepTeal else MaterialTheme.colorScheme.onSurface
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -311,15 +314,15 @@ fun FocusTimerScreen(
                             .clip(RoundedCornerShape(10.dp))
                             .clickable { onSelectSubject(null) },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isAll) BrandTeal else MaterialTheme.colorScheme.surface
+                            containerColor = if (isAll) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                         ),
-                        border = if (!isAll) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                        border = if (!isAll) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                     ) {
                         Text(
                             text = "General",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
-                            color = if (isAll) Color.White else MaterialTheme.colorScheme.onSurface,
+                            color = if (isAll) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
@@ -334,7 +337,7 @@ fun FocusTimerScreen(
                         colors = CardDefaults.cardColors(
                             containerColor = if (isSelected) subColor else MaterialTheme.colorScheme.surface
                         ),
-                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                     ) {
                         Text(
                             text = sub.name,
@@ -375,7 +378,7 @@ fun FocusTimerScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -387,7 +390,7 @@ fun FocusTimerScreen(
                 ) {
                     Text(
                         text = "Start a focus session to see your progress here.",
-                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                 }
             }
@@ -404,7 +407,7 @@ fun FocusTimerScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(14.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                         shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {

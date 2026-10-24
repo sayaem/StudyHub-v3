@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Notifications
@@ -23,10 +23,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontWeight
@@ -36,45 +38,70 @@ import androidx.compose.ui.unit.sp
 import com.example.ui.theme.BrandDeepTeal
 import com.example.ui.theme.BrandTeal
 import com.example.ui.theme.StatusDanger
-import com.example.ui.theme.TextPrimary
 
 @Composable
-fun StudyHubLogoMark(modifier: Modifier = Modifier, size: Dp = 32.dp) {
+fun StudyHubLogoMark(modifier: Modifier = Modifier, size: Dp = 34.dp) {
+    val tealPrimary = MaterialTheme.colorScheme.primary
+    val tealDeep = BrandDeepTeal
+    val cyanAccent = Color(0xFF22D3EE)
+
     Canvas(modifier = modifier.size(size)) {
         val w = this.size.width
         val h = this.size.height
 
-        // Book base / wings
+        // Left Book wing with gradient
         val leftPage = Path().apply {
-            moveTo(w * 0.12f, h * 0.72f)
-            lineTo(w * 0.48f, h * 0.88f)
-            lineTo(w * 0.48f, h * 0.42f)
-            lineTo(w * 0.12f, h * 0.32f)
+            moveTo(w * 0.12f, h * 0.68f)
+            lineTo(w * 0.48f, h * 0.86f)
+            lineTo(w * 0.48f, h * 0.38f)
+            lineTo(w * 0.12f, h * 0.28f)
             close()
         }
-        drawPath(leftPage, color = BrandTeal)
+        drawPath(
+            path = leftPage,
+            brush = Brush.verticalGradient(
+                colors = listOf(tealPrimary, tealDeep),
+                startY = h * 0.28f,
+                endY = h * 0.86f
+            )
+        )
 
+        // Right Book wing
         val rightPage = Path().apply {
-            moveTo(w * 0.88f, h * 0.72f)
-            lineTo(w * 0.52f, h * 0.88f)
-            lineTo(w * 0.52f, h * 0.42f)
-            lineTo(w * 0.88f, h * 0.32f)
+            moveTo(w * 0.88f, h * 0.68f)
+            lineTo(w * 0.52f, h * 0.86f)
+            lineTo(w * 0.52f, h * 0.38f)
+            lineTo(w * 0.88f, h * 0.28f)
             close()
         }
-        drawPath(rightPage, color = BrandDeepTeal)
+        drawPath(
+            path = rightPage,
+            brush = Brush.verticalGradient(
+                colors = listOf(tealDeep, Color(0xFF065F69)),
+                startY = h * 0.28f,
+                endY = h * 0.86f
+            )
+        )
 
-        // Upward dynamic arrow
+        // Dynamic Achievement Arrow (rising upward from center)
         val arrow = Path().apply {
             moveTo(w * 0.5f, h * 0.08f)
-            lineTo(w * 0.72f, h * 0.38f)
+            lineTo(w * 0.74f, h * 0.38f)
             lineTo(w * 0.58f, h * 0.38f)
-            lineTo(w * 0.58f, h * 0.7f)
-            lineTo(w * 0.42f, h * 0.7f)
+            lineTo(w * 0.58f, h * 0.72f)
+            lineTo(w * 0.42f, h * 0.72f)
             lineTo(w * 0.42f, h * 0.38f)
-            lineTo(w * 0.28f, h * 0.38f)
+            lineTo(w * 0.26f, h * 0.38f)
             close()
         }
-        drawPath(arrow, color = Color(0xFF00C6D7))
+        drawPath(
+            path = arrow,
+            brush = Brush.verticalGradient(
+                colors = listOf(cyanAccent, tealPrimary),
+                startY = h * 0.08f,
+                endY = h * 0.72f
+            )
+        )
     }
 }
 
@@ -88,9 +115,9 @@ fun StudyHubTopBar(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .height(56.dp)
+            .height(58.dp)
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 20.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
@@ -104,16 +131,17 @@ fun StudyHubTopBar(
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontSize = 22.sp,
                     fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = (-0.3).sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Notification Bell with badge
+            // Notification Bell with Badge
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(42.dp)
                     .clip(CircleShape)
                     .clickable(onClick = onNotificationClick),
                 contentAlignment = Alignment.Center
@@ -129,10 +157,10 @@ fun StudyHubTopBar(
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(top = 8.dp, end = 8.dp)
-                            .size(9.dp)
+                            .padding(top = 7.dp, end = 7.dp)
+                            .size(8.5.dp)
                             .background(StatusDanger, CircleShape)
-                            .border(1.5.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                            .border(1.5.dp, MaterialTheme.colorScheme.background, CircleShape)
                     )
                 }
             }
@@ -151,24 +179,28 @@ fun StudyHubDetailTopBar(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .height(56.dp)
+            .height(58.dp)
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 12.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBackClick) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier.size(40.dp)
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Navigate back",
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.size(22.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(6.dp))
 
             Text(
                 text = title,

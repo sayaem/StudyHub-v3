@@ -41,8 +41,19 @@ class StudyHubViewModel(application: Application) : AndroidViewModel(application
     val repository = StudyHubRepository(db)
     val notificationManager = StudyHubNotificationManager(application)
 
+    private val _isProfileLoaded = MutableStateFlow(false)
+    val isProfileLoaded: StateFlow<Boolean> = _isProfileLoaded.asStateFlow()
+
     val userProfile: StateFlow<UserProfile?> = repository.userProfile
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    init {
+        viewModelScope.launch {
+            repository.userProfile.collect {
+                _isProfileLoaded.value = true
+            }
+        }
+    }
 
     val subjects: StateFlow<List<SubjectEntity>> = repository.allSubjects
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

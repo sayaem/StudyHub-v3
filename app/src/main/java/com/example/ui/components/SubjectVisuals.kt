@@ -102,7 +102,7 @@ fun LiveSubjectCardPreview(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -146,7 +146,7 @@ fun LiveSubjectCardPreview(
                         Text(
                             text = "($banglaName)",
                             style = MaterialTheme.typography.bodySmall.copy(
-                                color = TextSecondary
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             maxLines = 1
                         )
@@ -158,7 +158,7 @@ fun LiveSubjectCardPreview(
                 Text(
                     text = if (chapterCount > 0) "$completedChapters / $chapterCount chapters" else "0 chapters added",
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = TextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
 
@@ -182,7 +182,7 @@ fun LiveSubjectCardPreview(
                 text = percentText,
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    color = if (chapterCount > 0) subjectColor else TextMuted
+                    color = if (chapterCount > 0) subjectColor else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
         }

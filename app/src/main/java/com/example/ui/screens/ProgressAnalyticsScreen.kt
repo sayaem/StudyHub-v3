@@ -165,9 +165,9 @@ fun ProgressAnalyticsScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { selectedPeriod = period },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                         ),
-                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                     ) {
                         Box(
                             modifier = Modifier
@@ -179,7 +179,7 @@ fun ProgressAnalyticsScreen(
                                 text = period,
                                 fontSize = 12.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -192,7 +192,7 @@ fun ProgressAnalyticsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(22.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(22.dp)),
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -200,7 +200,7 @@ fun ProgressAnalyticsScreen(
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
                         text = "Total Study Time",
-                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -242,14 +242,14 @@ fun ProgressAnalyticsScreen(
                                         .width(18.dp)
                                         .height((barHeightRatio * 85).dp)
                                         .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
-                                        .background(if (dayMins > 0) BrandBlue else Color(0xFFE2E8F0))
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = dayName,
-                                    fontSize = 11.sp,
-                                    color = TextSecondary
-                                )
+                                        .background(if (dayMins > 0) BrandBlue else MaterialTheme.colorScheme.surfaceVariant)
+                                 )
+                                 Spacer(modifier = Modifier.height(6.dp))
+                                 Text(
+                                     text = dayName,
+                                     fontSize = 11.sp,
+                                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                                 )
                             }
                         }
                     }
@@ -273,7 +273,7 @@ fun ProgressAnalyticsScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
@@ -294,7 +294,7 @@ fun ProgressAnalyticsScreen(
                         Text(
                             text = "Good things take time. Start a study session to see your progress here.",
                             style = MaterialTheme.typography.bodySmall.copy(
-                                color = TextSecondary,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
                         )
@@ -320,7 +320,7 @@ fun ProgressAnalyticsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 5.dp)
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {

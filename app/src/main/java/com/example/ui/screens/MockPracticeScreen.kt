@@ -157,15 +157,15 @@ fun MockPracticeScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { selectedSubjectTab = tab },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                         ),
-                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                     ) {
                         Text(
                             text = tab,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                         )
                     }
@@ -178,7 +178,7 @@ fun MockPracticeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -231,7 +231,7 @@ fun MockPracticeScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
@@ -245,13 +245,13 @@ fun MockPracticeScreen(
                                 modifier = Modifier
                                     .size(46.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(BrandPaleTeal),
+                                    .background(MaterialTheme.colorScheme.primaryContainer),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = if (quiz.subject == "Mathematics") Icons.Default.Calculate else Icons.Default.Science,
                                     contentDescription = quiz.subject,
-                                    tint = BrandTeal,
+                                    tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(24.dp)
                                 )
                             }

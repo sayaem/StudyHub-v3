@@ -114,15 +114,15 @@ fun NotificationsScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { selectedFilter = cat },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                         ),
-                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                     ) {
                         Text(
                             text = cat,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                         )
                     }
@@ -136,7 +136,7 @@ fun NotificationsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 24.dp)
-                        .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
@@ -150,13 +150,13 @@ fun NotificationsScreen(
                             modifier = Modifier
                                 .size(56.dp)
                                 .clip(CircleShape)
-                                .background(BrandPaleTeal),
+                                .background(MaterialTheme.colorScheme.primaryContainer),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Notifications,
                                 contentDescription = null,
-                                tint = BrandTeal,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(28.dp)
                             )
                         }
@@ -172,7 +172,7 @@ fun NotificationsScreen(
                         Text(
                             text = "Study session reminders and admission alerts will appear here.",
                             style = MaterialTheme.typography.bodySmall.copy(
-                                color = TextSecondary,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
                         )
@@ -198,7 +198,7 @@ fun NotificationsScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {

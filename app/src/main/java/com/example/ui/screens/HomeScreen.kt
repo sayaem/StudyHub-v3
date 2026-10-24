@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.EventNote
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
@@ -57,15 +59,8 @@ import com.example.data.local.UserProfile
 import com.example.ui.components.StudentAvatar
 import com.example.ui.components.getSubjectIcon
 import com.example.ui.components.parseColorHex
-import com.example.ui.theme.BorderSubtleLight
-import com.example.ui.theme.BrandDeepTeal
-import com.example.ui.theme.BrandLightBlue
-import com.example.ui.theme.BrandPaleTeal
 import com.example.ui.theme.BrandTeal
 import com.example.ui.theme.StatusWarning
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
 import java.util.Calendar
 
 @Composable
@@ -115,7 +110,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
-            .padding(horizontal = 20.dp, vertical = 12.dp)
+            .padding(horizontal = 20.dp, vertical = 10.dp)
     ) {
         // Greeting & Avatar Header
         Row(
@@ -127,8 +122,8 @@ fun HomeScreen(
                 Text(
                     text = "$greeting,",
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = TextSecondary,
-                        fontSize = 15.sp
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp
                     )
                 )
                 Text(
@@ -142,7 +137,7 @@ fun HomeScreen(
 
             StudentAvatar(
                 avatarId = avatarId,
-                size = 52.dp,
+                size = 54.dp,
                 onClick = onAvatarClick
             )
         }
@@ -153,7 +148,7 @@ fun HomeScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, BorderSubtleLight, RoundedCornerShape(22.dp)),
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(22.dp)),
             shape = RoundedCornerShape(22.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -169,7 +164,7 @@ fun HomeScreen(
                     Text(
                         text = "Today's Study Time",
                         style = MaterialTheme.typography.titleSmall.copy(
-                            color = TextSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium
                         )
                     )
@@ -179,33 +174,36 @@ fun HomeScreen(
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 30.sp
+                            fontSize = 32.sp
                         )
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Daily goal: ${goalHours}h (${todayStudyMinutes}m completed)",
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = if (progressPercent >= 100) BrandTeal else TextSecondary,
+                            color = if (progressPercent >= 100) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium
                         )
                     )
                 }
 
                 // Circular Progress Ring
+                val ringTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                val ringProgressColor = MaterialTheme.colorScheme.primary
+
                 Box(
-                    modifier = Modifier.size(80.dp),
+                    modifier = Modifier.size(82.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeWidth = 8.dp.toPx()
+                        val strokeWidth = 8.5.dp.toPx()
                         val diameter = size.minDimension - strokeWidth
                         val topLeft = Offset(strokeWidth / 2, strokeWidth / 2)
                         val arcSize = Size(diameter, diameter)
 
                         // Track
                         drawArc(
-                            color = BrandPaleTeal,
+                            color = ringTrackColor,
                             startAngle = -90f,
                             sweepAngle = 360f,
                             useCenter = false,
@@ -216,7 +214,7 @@ fun HomeScreen(
 
                         // Progress
                         drawArc(
-                            color = BrandTeal,
+                            color = ringProgressColor,
                             startAngle = -90f,
                             sweepAngle = progressRatio * 360f,
                             useCenter = false,
@@ -231,7 +229,7 @@ fun HomeScreen(
                             text = "$progressPercent%",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = BrandTeal,
+                                color = ringProgressColor,
                                 fontSize = 16.sp
                             )
                         )
@@ -251,14 +249,14 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .weight(1f)
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Syllabus Progress",
-                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -275,8 +273,8 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .height(5.dp)
                             .clip(RoundedCornerShape(3.dp)),
-                        color = BrandTeal,
-                        trackColor = BrandPaleTeal
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }
             }
@@ -285,14 +283,14 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .weight(1f)
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Next Target",
-                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -307,7 +305,7 @@ fun HomeScreen(
                     Text(
                         text = if (nextTarget != null) "Deadline: ${nextTarget.applicationDeadline}" else "Tap to plan exam",
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = if (nextTarget != null) StatusWarning else BrandTeal,
+                            color = if (nextTarget != null) StatusWarning else MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Medium
                         ),
                         maxLines = 1
@@ -336,7 +334,7 @@ fun HomeScreen(
             QuickActionButton(
                 icon = Icons.Default.Add,
                 label = "Add Subject",
-                color = BrandTeal,
+                color = MaterialTheme.colorScheme.primary,
                 onClick = onAddSubjectClick
             )
             QuickActionButton(
@@ -387,7 +385,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
                     .clickable { onSubjectClick(activeSubject.id) }
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -401,7 +399,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .size(50.dp)
                             .clip(RoundedCornerShape(14.dp))
-                            .background(subjectColor.copy(alpha = 0.12f)),
+                            .background(subjectColor.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -425,7 +423,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = inProgressChapter?.title ?: "${subjectChapters.size} Chapters total",
-                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                         )
                         if (subjectChapters.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(6.dp))
@@ -444,7 +442,7 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "Open",
-                        tint = TextSecondary,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -454,7 +452,7 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -468,13 +466,13 @@ fun HomeScreen(
                         modifier = Modifier
                             .size(54.dp)
                             .clip(CircleShape)
-                            .background(BrandPaleTeal),
+                            .background(MaterialTheme.colorScheme.primaryContainer),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = null,
-                            tint = BrandTeal,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -494,7 +492,7 @@ fun HomeScreen(
                     Text(
                         text = "Add one subject at a time to track chapters and monitor your syllabus.",
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = TextSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
                     )
@@ -503,7 +501,7 @@ fun HomeScreen(
 
                     Button(
                         onClick = onAddSubjectClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = BrandTeal),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text("Add Subject")
@@ -531,7 +529,7 @@ fun HomeScreen(
                 text = "View All",
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = BrandTeal
+                    color = MaterialTheme.colorScheme.primary
                 ),
                 modifier = Modifier.clickable { onTodayPlanClick() }
             )
@@ -543,7 +541,7 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -556,7 +554,7 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = null,
-                        tint = TextMuted,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -570,7 +568,7 @@ fun HomeScreen(
                         )
                         Text(
                             text = "Tap to schedule study tasks or focus sessions",
-                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                         )
                     }
                 }
@@ -582,7 +580,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
-                        .border(1.dp, BorderSubtleLight, RoundedCornerShape(14.dp)),
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                     shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
@@ -595,7 +593,7 @@ fun HomeScreen(
                         Icon(
                             imageVector = if (isCompleted) Icons.Default.CheckCircle else Icons.Default.EventNote,
                             contentDescription = null,
-                            tint = if (isCompleted) BrandTeal else TextMuted,
+                            tint = if (isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
@@ -604,12 +602,12 @@ fun HomeScreen(
                                 text = task.title,
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.SemiBold,
-                                    color = if (isCompleted) TextMuted else MaterialTheme.colorScheme.onSurface
+                                    color = if (isCompleted) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
                                 )
                             )
                             Text(
                                 text = "${task.durationMinutes} mins • ${task.priority.lowercase().replaceFirstChar { it.uppercase() }} Priority",
-                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                     }
@@ -631,6 +629,7 @@ fun QuickActionButton(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
             .padding(4.dp)
     ) {
@@ -638,7 +637,7 @@ fun QuickActionButton(
             modifier = Modifier
                 .size(54.dp)
                 .clip(CircleShape)
-                .background(color.copy(alpha = 0.12f)),
+                .background(color.copy(alpha = 0.14f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(

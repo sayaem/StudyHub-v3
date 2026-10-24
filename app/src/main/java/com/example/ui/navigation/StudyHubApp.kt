@@ -118,11 +118,14 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
     val totalHoursFocused = sessions.filter { it.status == "COMPLETED" }.sumOf { it.elapsedSeconds } / 3600f
     val completedChaptersCount = chapters.count { it.status == "COMPLETED" }
 
+    val isProfileLoaded by viewModel.isProfileLoaded.collectAsStateWithLifecycle()
+
     StudyHubTheme(themeMode = currentThemeMode) {
         Crossfade(targetState = currentScreen, label = "screen_transition") { screen ->
             when (screen) {
                 AppScreen.SPLASH -> {
                     SplashScreen(
+                        isReady = isProfileLoaded,
                         onSplashFinished = {
                             if (userProfile?.isOnboardingCompleted == true) {
                                 currentScreen = AppScreen.MAIN

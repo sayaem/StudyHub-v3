@@ -117,7 +117,7 @@ fun ProfileScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, BorderSubtleLight, RoundedCornerShape(22.dp)),
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(22.dp)),
             shape = RoundedCornerShape(22.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -144,7 +144,7 @@ fun ProfileScreen(
 
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -167,7 +167,7 @@ fun ProfileScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
             shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
@@ -279,7 +279,7 @@ fun ProfileMenuItem(
             .padding(vertical = 4.dp)
             .clip(RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
-            .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -316,7 +316,7 @@ fun ProfileMenuItem(
                 )
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                 )
             }
 

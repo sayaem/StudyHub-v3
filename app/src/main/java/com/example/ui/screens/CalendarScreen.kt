@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.EventNote
@@ -188,7 +189,7 @@ fun CalendarScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
             shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
@@ -257,15 +258,15 @@ fun CalendarScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .clickable { selectedFilter = filter },
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                     ),
-                    border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                    border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                 ) {
                     Text(
                         text = filter,
                         fontSize = 12.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                     )
                 }
@@ -292,9 +293,9 @@ fun CalendarScreen(
                 onClick = { showAddTaskDialog = true },
                 modifier = Modifier
                     .size(32.dp)
-                    .background(BrandPaleTeal, CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Task", tint = BrandTeal, modifier = Modifier.size(18.dp))
+                Icon(Icons.Default.Add, contentDescription = "Add Task", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
             }
         }
 
@@ -304,7 +305,7 @@ fun CalendarScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -324,7 +325,7 @@ fun CalendarScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Schedule a study task or exam milestone to stay organized.",
-                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
@@ -346,7 +347,7 @@ fun CalendarScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
@@ -360,7 +361,7 @@ fun CalendarScreen(
                                 modifier = Modifier
                                     .size(40.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFFFEF3C7)),
+                                    .background(StatusWarning.copy(alpha = 0.15f)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(Icons.Default.School, contentDescription = null, tint = StatusWarning, modifier = Modifier.size(22.dp))
@@ -370,17 +371,18 @@ fun CalendarScreen(
                                 Text(
                                     text = "${adm.institutionName} - Deadline",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = adm.category,
                                     fontSize = 12.sp,
-                                    color = TextSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                             Box(
                                 modifier = Modifier
-                                    .background(Color(0xFFFEE2E2), RoundedCornerShape(8.dp))
+                                    .background(StatusDanger.copy(alpha = 0.15f), RoundedCornerShape(8.dp))
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
                                 Text(
@@ -400,7 +402,7 @@ fun CalendarScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(14.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                         shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
@@ -417,7 +419,7 @@ fun CalendarScreen(
                                 Icon(
                                     imageVector = if (isDone) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                     contentDescription = null,
-                                    tint = if (isDone) BrandTeal else TextMuted
+                                    tint = if (isDone) BrandTeal else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                             Spacer(modifier = Modifier.width(10.dp))
@@ -426,19 +428,24 @@ fun CalendarScreen(
                                     text = task.title,
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 14.sp,
-                                    color = if (isDone) TextMuted else TextPrimary
+                                    color = if (isDone) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
                                     text = "${task.durationMinutes} mins • ${task.priority.lowercase().replaceFirstChar { it.uppercase() }}",
                                     fontSize = 12.sp,
-                                    color = TextSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                             IconButton(
                                 onClick = { onDeleteTask(task) },
                                 modifier = Modifier.size(24.dp)
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = "Delete", tint = TextMuted, modifier = Modifier.size(16.dp))
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Delete",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(16.dp)
+                                )
                             }
                         }
                     }
@@ -466,7 +473,7 @@ fun CalendarScreen(
                         singleLine = true
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text("Duration: $durationMinutes mins", fontSize = 13.sp, color = TextSecondary)
+                    Text("Duration: $durationMinutes mins", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         listOf(15, 30, 45, 60).forEach { dur ->
                             Card(
@@ -474,13 +481,13 @@ fun CalendarScreen(
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable { durationMinutes = dur },
                                 colors = CardDefaults.cardColors(
-                                    containerColor = if (durationMinutes == dur) BrandTeal else Color(0xFFF1F5F9)
+                                    containerColor = if (durationMinutes == dur) BrandTeal else MaterialTheme.colorScheme.surfaceVariant
                                 )
                             ) {
                                 Text(
                                     text = "${dur}m",
                                     fontSize = 12.sp,
-                                    color = if (durationMinutes == dur) Color.White else TextPrimary,
+                                    color = if (durationMinutes == dur) Color.White else MaterialTheme.colorScheme.onSurface,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                                 )
                             }

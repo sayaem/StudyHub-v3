@@ -1,10 +1,12 @@
 package com.example.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 
 val StudyHubLightColorScheme = lightColorScheme(
@@ -19,36 +21,36 @@ val StudyHubLightColorScheme = lightColorScheme(
     tertiary = BrandDeepTeal,
     onTertiary = Color.White,
     background = AppBackgroundLight,
-    onBackground = TextPrimary,
+    onBackground = TextPrimaryLight,
     surface = CardSurfaceLight,
-    onSurface = TextPrimary,
-    surfaceVariant = Color(0xFFF1F5F9),
-    onSurfaceVariant = TextSecondary,
+    onSurface = TextPrimaryLight,
+    surfaceVariant = SurfaceVariantLight,
+    onSurfaceVariant = TextSecondaryLight,
     outline = BorderSubtleLight,
-    outlineVariant = Color(0xFFE2E8F0),
+    outlineVariant = Color(0xFFE8EEF5),
     error = StatusDanger,
     onError = Color.White
 )
 
 val StudyHubDarkColorScheme = darkColorScheme(
-    primary = BrandTeal,
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFF0F3A40),
-    onPrimaryContainer = Color(0xFFA5F3FC),
-    secondary = BrandBlue,
+    primary = BrandTealDark,
+    onPrimary = Color(0xFF042F2E),
+    primaryContainer = BrandPaleTealDark,
+    onPrimaryContainer = Color(0xFF99F6E4),
+    secondary = BrandBlueDark,
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFF1E3A8A),
+    secondaryContainer = BrandLightBlueDark,
     onSecondaryContainer = Color(0xFFBFDBFE),
-    tertiary = BrandDeepTeal,
+    tertiary = BrandTealDark,
     onTertiary = Color.White,
-    background = DarkBackground,
-    onBackground = DarkTextPrimary,
-    surface = DarkSurface,
-    onSurface = DarkTextPrimary,
-    surfaceVariant = Color(0xFF1E293B),
-    onSurfaceVariant = DarkTextSecondary,
-    outline = DarkBorder,
-    outlineVariant = Color(0xFF475569),
+    background = AppBackgroundDark,
+    onBackground = TextPrimaryDark,
+    surface = CardSurfaceDark,
+    onSurface = TextPrimaryDark,
+    surfaceVariant = SurfaceVariantDark,
+    onSurfaceVariant = TextSecondaryDark,
+    outline = BorderSubtleDark,
+    outlineVariant = Color(0xFF1A2942),
     error = StatusDanger,
     onError = Color.White
 )
@@ -56,6 +58,32 @@ val StudyHubDarkColorScheme = darkColorScheme(
 enum class ThemeMode {
     LIGHT, DARK, SYSTEM
 }
+
+// Convenient semantic properties
+val ColorScheme.textPrimary: Color
+    @Composable
+    @ReadOnlyComposable
+    get() = onBackground
+
+val ColorScheme.textSecondary: Color
+    @Composable
+    @ReadOnlyComposable
+    get() = onSurfaceVariant
+
+val ColorScheme.cardBorder: Color
+    @Composable
+    @ReadOnlyComposable
+    get() = outline
+
+val ColorScheme.cardSurface: Color
+    @Composable
+    @ReadOnlyComposable
+    get() = surface
+
+val ColorScheme.chipBackground: Color
+    @Composable
+    @ReadOnlyComposable
+    get() = surfaceVariant
 
 @Composable
 fun StudyHubTheme(

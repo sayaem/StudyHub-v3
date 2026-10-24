@@ -102,7 +102,7 @@ fun SettingsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -113,7 +113,7 @@ fun SettingsScreen(
                     )
                     Text(
                         text = "Default is all-light mode. Dark mode available upon selection.",
-                        style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -135,7 +135,7 @@ fun SettingsScreen(
                                     .clip(RoundedCornerShape(12.dp))
                                     .clickable { onThemeModeChanged(mode) },
                                 colors = CardDefaults.cardColors(
-                                    containerColor = if (isSelected) BrandTeal else Color(0xFFF1F5F9)
+                                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
                                 )
                             ) {
                                 Box(
@@ -148,7 +148,7 @@ fun SettingsScreen(
                                         text = label,
                                         fontSize = 13.sp,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                        color = if (isSelected) Color.White else TextPrimary
+                                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                             }
@@ -173,7 +173,7 @@ fun SettingsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -224,7 +224,7 @@ fun SettingsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -247,7 +247,7 @@ fun SettingsScreen(
                             Text(
                                 text = "Reconfigure avatar, academic path, and daily goal",
                                 fontSize = 12.sp,
-                                color = TextSecondary
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -273,7 +273,7 @@ fun SettingsScreen(
                             Text(
                                 text = "Permanently deletes all subjects, chapters, notes, and targets",
                                 fontSize = 12.sp,
-                                color = TextSecondary
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -296,7 +296,7 @@ fun SettingsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
@@ -310,10 +310,10 @@ fun SettingsScreen(
                         modifier = Modifier
                             .size(44.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(BrandPaleTeal),
+                            .background(MaterialTheme.colorScheme.primaryContainer),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.Info, contentDescription = null, tint = BrandTeal)
+                        Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     }
                     Spacer(modifier = Modifier.width(14.dp))
                     Column {
@@ -323,7 +323,7 @@ fun SettingsScreen(
                         )
                         Text(
                             text = "Learn • Plan • Achieve\nMade for students across Bangladesh",
-                            style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                         )
                     }
                 }

@@ -144,8 +144,8 @@ fun NotesScreen(
                         .height(52.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = BrandTeal,
-                        unfocusedBorderColor = BorderSubtleLight,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface
                     ),
@@ -167,15 +167,15 @@ fun NotesScreen(
                                 .clip(RoundedCornerShape(12.dp))
                                 .clickable { selectedSubjectFilter = option },
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                             ),
-                            border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtleLight) else null
+                            border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
                         ) {
                             Text(
                                 text = option,
                                 fontSize = 12.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                             )
                         }
@@ -189,7 +189,7 @@ fun NotesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 24.dp)
-                            .border(1.dp, BorderSubtleLight, RoundedCornerShape(20.dp)),
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                         shape = RoundedCornerShape(20.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
@@ -203,10 +203,10 @@ fun NotesScreen(
                                 modifier = Modifier
                                     .size(56.dp)
                                     .clip(CircleShape)
-                                    .background(BrandPaleTeal),
+                                    .background(MaterialTheme.colorScheme.primaryContainer),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(Icons.Default.Description, contentDescription = null, tint = BrandTeal, modifier = Modifier.size(28.dp))
+                                Icon(Icons.Default.Description, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
                             }
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
@@ -220,7 +220,7 @@ fun NotesScreen(
                             Text(
                                 text = "Keep formulas, summaries, and exam key points organized.",
                                 style = MaterialTheme.typography.bodySmall.copy(
-                                    color = TextSecondary,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                                 )
                             )
@@ -254,7 +254,7 @@ fun NotesScreen(
                                         editingNote = note
                                         showEditorSheet = true
                                     }
-                                    .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                                 shape = RoundedCornerShape(18.dp),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                             ) {

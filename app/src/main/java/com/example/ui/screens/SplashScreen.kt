@@ -24,20 +24,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.StudyHubLogoMark
 import com.example.ui.theme.TextMuted
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
+    isReady: Boolean = true,
     onSplashFinished: () -> Unit
 ) {
     val scale = remember { Animatable(0.85f) }
     val alpha = remember { Animatable(0f) }
+    var minTimeElapsed by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         alpha.animateTo(1f, animationSpec = tween(500))
         scale.animateTo(1f, animationSpec = tween(500))
         delay(600L)
-        onSplashFinished()
+        minTimeElapsed = true
+    }
+
+    LaunchedEffect(minTimeElapsed, isReady) {
+        if (minTimeElapsed && isReady) {
+            onSplashFinished()
+        }
     }
 
     Box(

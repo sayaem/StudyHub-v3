@@ -406,7 +406,7 @@ fun AvatarStep(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, BorderSubtleLight, RoundedCornerShape(18.dp)),
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
             shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
@@ -553,7 +553,7 @@ fun LevelOptionCard(
             .clickable(onClick = onClick)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) color else BorderSubtleLight,
+                color = if (isSelected) color else MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(18.dp)
             ),
         shape = RoundedCornerShape(18.dp),
@@ -669,12 +669,12 @@ fun AcademicDetailsStep(
                         .clickable { onAdmissionTrackSelected(trackName) }
                         .border(
                             width = if (isSelected) 2.dp else 1.dp,
-                            color = if (isSelected) BrandTeal else BorderSubtleLight,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(16.dp)
                         ),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) BrandPaleTeal else MaterialTheme.colorScheme.surface
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Row(
@@ -710,7 +710,7 @@ fun AcademicDetailsStep(
                             )
                             Text(
                                 text = trackDesc,
-                                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
+                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
 
@@ -740,7 +740,7 @@ fun AcademicDetailsStep(
             Text(
                 text = "Select your study group and target exam year.",
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             )
@@ -766,11 +766,11 @@ fun AcademicDetailsStep(
                         .clickable { onGroupSelected(grp) }
                         .border(
                             width = if (isSelected) 2.dp else 1.dp,
-                            color = if (isSelected) BrandTeal else BorderSubtleLight,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(14.dp)
                         ),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) BrandPaleTeal else MaterialTheme.colorScheme.surface
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Row(
@@ -817,11 +817,11 @@ fun AcademicDetailsStep(
                             .clickable { onYearSelected(y) }
                             .border(
                                 width = if (isSelected) 2.dp else 1.dp,
-                                color = if (isSelected) BrandTeal else BorderSubtleLight,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                                 shape = RoundedCornerShape(12.dp)
                             ),
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isSelected) BrandPaleTeal else MaterialTheme.colorScheme.surface
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                         )
                     ) {
                         Box(
@@ -833,7 +833,7 @@ fun AcademicDetailsStep(
                             Text(
                                 text = y,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) BrandTeal else MaterialTheme.colorScheme.onSurface
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -919,13 +919,13 @@ fun DailyGoalStep(
         ) {
             // Hours
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Hours", style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary))
+                Text("Hours", style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant))
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-                        .border(1.dp, BorderSubtleLight, RoundedCornerShape(14.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
@@ -957,12 +957,12 @@ fun DailyGoalStep(
 
             // Minutes (fixed to 00 in daily hours goal)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Minutes", style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary))
+                Text("Minutes", style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant))
                 Spacer(modifier = Modifier.height(4.dp))
                 Box(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-                        .border(1.dp, BorderSubtleLight, RoundedCornerShape(14.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
                         .padding(horizontal = 24.dp, vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -1007,11 +1007,11 @@ fun DailyGoalStep(
                         .clickable { onTimeSelected(time) }
                         .border(
                             width = if (isSelected) 1.5.dp else 1.dp,
-                            color = if (isSelected) BrandTeal else BorderSubtleLight,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(12.dp)
                         ),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) BrandTeal else MaterialTheme.colorScheme.surface
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Box(
@@ -1097,8 +1097,8 @@ fun OnboardingSummaryStep(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = BrandTeal,
-                unfocusedBorderColor = BorderSubtleLight
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline
             ),
             singleLine = true
         )
@@ -1108,7 +1108,7 @@ fun OnboardingSummaryStep(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, BorderSubtleLight, RoundedCornerShape(16.dp)),
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
