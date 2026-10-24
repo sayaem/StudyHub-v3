@@ -288,7 +288,7 @@ fun WelcomeStep(onStart: () -> Unit) {
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.studyhub_welcome_illustration_1792839924416),
+                    painter = painterResource(id = R.drawable.studyhub_welcome_hero_1792846521305),
                     contentDescription = "Welcome Student",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -881,7 +881,7 @@ fun DailyGoalStep(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.studyhub_goal_illustration_1792839944282),
+                painter = painterResource(id = R.drawable.studyhub_goal_hero_1792846534277),
                 contentDescription = "Study Desk",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

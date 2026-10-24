@@ -58,19 +58,25 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.IconButton
+
 @Composable
 fun NotificationsScreen(
     notifications: List<NotificationItemEntity>,
     onMarkAllRead: () -> Unit,
+    onDeleteNotification: ((Long) -> Unit)? = null,
+    onNavigateRoute: ((String) -> Unit)? = null,
     onBack: () -> Unit
 ) {
-    var selectedFilter by remember { mutableStateOf("All") } // "All", "Study", "Admission", "System"
+    var selectedFilter by remember { mutableStateOf("All") } // "All", "Roasts", "Study", "Admission", "System"
 
     val filtered = notifications.filter {
         when (selectedFilter) {
-            "Study" -> it.category == "STUDY" || it.category == "DAILY_GOAL"
-            "Admission" -> it.category == "ADMISSION"
-            "System" -> it.category == "SYSTEM"
+            "Roasts" -> it.category.contains("ROAST") || it.category.contains("DISTRACTION")
+            "Study" -> it.category.contains("STUDY") || it.category.contains("SYLLABUS") || it.category.contains("TASK") || it.category.contains("NOTE")
+            "Admission" -> it.category.contains("ADMISSION") || it.category.contains("EXAM")
+            "System" -> it.category == "SYSTEM" || it.category.contains("HEALTH")
             else -> true
         }
     }
@@ -81,7 +87,7 @@ fun NotificationsScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         StudyHubDetailTopBar(
-            title = "Notifications",
+            title = "Notification Inbox",
             onBackClick = onBack,
             actions = {
                 if (notifications.any { !it.isRead }) {
@@ -102,12 +108,12 @@ fun NotificationsScreen(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 8.dp)
         ) {
-            // Filter Tabs: All, Study, Admission, System
+            // Filter Tabs: All, Roasts, Study, Admission, System
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                listOf("All", "Study", "Admission", "System").forEach { cat ->
+                listOf("All", "Roasts", "Study", "Admission", "System").forEach { cat ->
                     val isSelected = selectedFilter == cat
                     Card(
                         modifier = Modifier
@@ -123,7 +129,7 @@ fun NotificationsScreen(
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                             color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
                 }
@@ -170,7 +176,7 @@ fun NotificationsScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Study session reminders and admission alerts will appear here.",
+                            text = "Adaptive study nudges and admission alerts will appear here.",
                             style = MaterialTheme.typography.bodySmall.copy(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -184,21 +190,27 @@ fun NotificationsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(filtered, key = { it.id }) { item ->
-                        val icon = when (item.category) {
-                            "STUDY" -> Icons.Default.Timer
-                            "ADMISSION" -> Icons.Default.School
+                        val icon = when {
+                            item.category.contains("ADMISSION") || item.category.contains("EXAM") -> Icons.Default.School
+                            item.category.contains("STUDY") || item.category.contains("FOCUS") -> Icons.Default.Timer
                             else -> Icons.Default.Info
                         }
-                        val tint = when (item.category) {
-                            "STUDY" -> BrandTeal
-                            "ADMISSION" -> StatusWarning
+                        val tint = when {
+                            item.category.contains("ADMISSION") -> StatusWarning
+                            item.category.contains("ROAST") || item.category.contains("DISTRACTION") -> StatusDanger
+                            item.category.contains("STUDY") || item.category.contains("FOCUS") -> BrandTeal
                             else -> Color(0xFF8B5CF6)
                         }
 
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
+                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp))
+                                .clickable(enabled = !item.actionRoute.isNullOrBlank()) {
+                                    item.actionRoute?.let { route ->
+                                        onNavigateRoute?.invoke(route)
+                                    }
+                                },
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
@@ -236,7 +248,8 @@ fun NotificationsScreen(
                                             style = MaterialTheme.typography.titleSmall.copy(
                                                 fontWeight = FontWeight.Bold,
                                                 color = MaterialTheme.colorScheme.onSurface
-                                            )
+                                            ),
+                                            modifier = Modifier.weight(1f)
                                         )
 
                                         if (!item.isRead) {
@@ -246,6 +259,20 @@ fun NotificationsScreen(
                                                     .clip(CircleShape)
                                                     .background(StatusDanger)
                                             )
+                                        }
+
+                                        if (onDeleteNotification != null) {
+                                            IconButton(
+                                                onClick = { onDeleteNotification(item.id) },
+                                                modifier = Modifier.size(28.dp)
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Delete,
+                                                    contentDescription = "Delete notification",
+                                                    tint = TextMuted,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            }
                                         }
                                     }
 
@@ -258,10 +285,26 @@ fun NotificationsScreen(
 
                                     Spacer(modifier = Modifier.height(6.dp))
 
-                                    Text(
-                                        text = formatTimeAgo(item.createdAt),
-                                        style = MaterialTheme.typography.labelSmall.copy(color = TextMuted)
-                                    )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = formatTimeAgo(item.createdAt),
+                                            style = MaterialTheme.typography.labelSmall.copy(color = TextMuted)
+                                        )
+
+                                        if (!item.actionRoute.isNullOrBlank()) {
+                                            Text(
+                                                text = "Tap to view ->",
+                                                style = MaterialTheme.typography.labelSmall.copy(
+                                                    color = BrandTeal,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

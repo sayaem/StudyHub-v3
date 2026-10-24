@@ -65,6 +65,7 @@ fun SettingsScreen(
     currentThemeMode: ThemeMode,
     onThemeModeChanged: (ThemeMode) -> Unit,
     onSettingsUpdated: (AppSettingsEntity) -> Unit,
+    onTriggerInstantNotification: (() -> Unit)? = null,
     onResetOnboarding: () -> Unit,
     onResetAllData: () -> Unit,
     onBack: () -> Unit
@@ -186,6 +187,20 @@ fun SettingsScreen(
                     )
 
                     SettingsSwitchRow(
+                        title = "Funny Roasts (Banglish)",
+                        subtitle = "Playful roasts when idling or losing focus (e.g., N001–N015)",
+                        checked = settings.funnyRoastsEnabled,
+                        onCheckedChange = { onSettingsUpdated(settings.copy(funnyRoastsEnabled = it)) }
+                    )
+
+                    SettingsSwitchRow(
+                        title = "Distraction Nudges",
+                        subtitle = "Gentle nudges when apps or social media distract you (e.g., N016–N030)",
+                        checked = settings.distractionNudgesEnabled,
+                        onCheckedChange = { onSettingsUpdated(settings.copy(distractionNudgesEnabled = it)) }
+                    )
+
+                    SettingsSwitchRow(
                         title = "Daily Goal Reminders",
                         subtitle = "Evening reminder if study goal is incomplete",
                         checked = settings.dailyGoalRemindersEnabled,
@@ -205,6 +220,54 @@ fun SettingsScreen(
                         checked = settings.soundEnabled,
                         onCheckedChange = { onSettingsUpdated(settings.copy(soundEnabled = it)) }
                     )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Developer & Testing Controls
+            Text(
+                text = "Developer & Test Controls",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Notification Engine Test",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "A 3-minute test notification is automatically scheduled on app launch. Use the button below for immediate testing.",
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = { onTriggerInstantNotification?.invoke() },
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandTeal),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Trigger Test Notification Now",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
                 }
             }
 

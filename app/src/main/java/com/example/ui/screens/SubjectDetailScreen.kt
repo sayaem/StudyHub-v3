@@ -1,10 +1,9 @@
 package com.example.ui.screens
 
-import androidx.compose.animation.animateColorAsState
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,26 +24,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,11 +63,11 @@ import com.example.data.local.SubjectEntity
 import com.example.ui.components.StudyHubDetailTopBar
 import com.example.ui.components.getSubjectIcon
 import com.example.ui.components.parseColorHex
-import com.example.ui.theme.BrandTeal
 import com.example.ui.theme.StatusDanger
 import com.example.ui.theme.StatusSuccess
 import com.example.ui.theme.StatusWarning
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubjectDetailScreen(
     subject: SubjectEntity,
@@ -77,14 +78,14 @@ fun SubjectDetailScreen(
     onDeleteChapter: (ChapterEntity) -> Unit,
     onDeleteSubject: (SubjectEntity) -> Unit
 ) {
+    BackHandler { onBack() }
+
     var chapterFilter by remember { mutableStateOf("All") } // "All", "To-Do", "In Progress", "Completed"
-    var newChapterTitle by remember { mutableStateOf("") }
-    var showAddChapterRow by remember { mutableStateOf(false) }
+    var showAddChapterSheet by remember { mutableStateOf(false) }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
     val subjectColor = parseColorHex(subject.colorHex)
     val completedCount = chapters.count { it.status == "COMPLETED" }
-    val inProgressCount = chapters.count { it.status == "IN_PROGRESS" }
     val totalCount = chapters.size
     val progress = if (totalCount > 0) completedCount.toFloat() / totalCount else 0f
     val percent = (progress * 100).toInt()
@@ -259,7 +260,7 @@ fun SubjectDetailScreen(
                 )
 
                 Button(
-                    onClick = { showAddChapterRow = true },
+                    onClick = { showAddChapterSheet = true },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 4.dp)
@@ -271,45 +272,6 @@ fun SubjectDetailScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-
-            if (showAddChapterRow) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        value = newChapterTitle,
-                        onValueChange = { newChapterTitle = it },
-                        placeholder = { Text("Chapter name (e.g. Calculus)", fontSize = 13.sp) },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = {
-                            if (newChapterTitle.isNotBlank()) {
-                                onAddChapter(newChapterTitle)
-                                newChapterTitle = ""
-                                showAddChapterRow = false
-                            }
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                    ) {
-                        Text("Add")
-                    }
-                    IconButton(onClick = { showAddChapterRow = false }) {
-                        Icon(Icons.Default.Close, contentDescription = "Cancel")
-                    }
-                }
-            }
 
             if (filteredChapters.isEmpty()) {
                 Card(
@@ -457,6 +419,18 @@ fun SubjectDetailScreen(
         }
     }
 
+    if (showAddChapterSheet) {
+        AddChapterBottomSheet(
+            subjectName = subject.name,
+            existingChapters = chapters,
+            onDismiss = { showAddChapterSheet = false },
+            onAddChapter = { title, initialStatus ->
+                onAddChapter(title)
+                showAddChapterSheet = false
+            }
+        )
+    }
+
     if (showDeleteConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmDialog = false },
@@ -480,5 +454,161 @@ fun SubjectDetailScreen(
                 }
             }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddChapterBottomSheet(
+    subjectName: String,
+    existingChapters: List<ChapterEntity>,
+    onDismiss: () -> Unit,
+    onAddChapter: (title: String, initialStatus: String) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var chapterTitle by remember { mutableStateOf("") }
+    var selectedStatus by remember { mutableStateOf("NOT_STARTED") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        containerColor = MaterialTheme.colorScheme.surface
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding()
+        ) {
+            Text(
+                text = "Add Chapter",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Subject: $subjectName",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = chapterTitle,
+                onValueChange = {
+                    chapterTitle = it
+                    errorMessage = null
+                },
+                label = { Text("Chapter Name *") },
+                placeholder = { Text("e.g. Integration by Parts") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                isError = errorMessage != null,
+                supportingText = errorMessage?.let { { Text(it, color = StatusDanger) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                ),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Initial Status",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val statuses = listOf(
+                    Triple("NOT_STARTED", "To-Do", MaterialTheme.colorScheme.onSurfaceVariant),
+                    Triple("IN_PROGRESS", "In Progress", StatusWarning),
+                    Triple("COMPLETED", "Completed", StatusSuccess)
+                )
+
+                statuses.forEach { (code, label, color) ->
+                    val isSelected = selectedStatus == code
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { selectedStatus = code }
+                            .border(
+                                width = if (isSelected) 2.dp else 1.dp,
+                                color = if (isSelected) color else MaterialTheme.colorScheme.outline,
+                                shape = RoundedCornerShape(12.dp)
+                            ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isSelected) color.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = label,
+                                fontSize = 12.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                color = if (isSelected) color else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Text("Cancel")
+                }
+
+                Button(
+                    onClick = {
+                        val trimmed = chapterTitle.trim()
+                        if (trimmed.isBlank()) {
+                            errorMessage = "Chapter name cannot be empty"
+                        } else if (existingChapters.any { it.title.equals(trimmed, ignoreCase = true) }) {
+                            errorMessage = "A chapter with this name already exists in $subjectName"
+                        } else {
+                            onAddChapter(trimmed, selectedStatus)
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Save Chapter", fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }

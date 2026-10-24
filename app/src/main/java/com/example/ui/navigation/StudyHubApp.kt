@@ -49,6 +49,10 @@ import com.example.ui.theme.BrandTeal
 import com.example.ui.theme.StudyHubTheme
 import com.example.ui.theme.ThemeMode
 
+import com.example.notifications.StudyHubNotificationManager
+import com.example.ui.components.InAppNotificationBanner
+import java.util.Locale
+
 enum class AppScreen {
     SPLASH,
     ONBOARDING,
@@ -62,7 +66,10 @@ enum class AppScreen {
 }
 
 @Composable
-fun StudyHubApp(viewModel: StudyHubViewModel) {
+fun StudyHubApp(
+    viewModel: StudyHubViewModel,
+    initialTargetRoute: String? = null
+) {
     val userProfile by viewModel.userProfile.collectAsStateWithLifecycle()
     val subjects by viewModel.subjects.collectAsStateWithLifecycle()
     val chapters by viewModel.chapters.collectAsStateWithLifecycle()
@@ -86,6 +93,56 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
 
     var currentScreen by remember { mutableStateOf(AppScreen.SPLASH) }
     var currentNavDestination by remember { mutableStateOf(NavDestination.HOME) }
+
+    fun navigateToRoute(route: String?) {
+        if (route.isNullOrBlank()) return
+        when (route.lowercase(Locale.ROOT)) {
+            "focus" -> {
+                currentScreen = AppScreen.MAIN
+                currentNavDestination = NavDestination.FOCUS
+            }
+            "syllabus" -> {
+                currentScreen = AppScreen.MAIN
+                currentNavDestination = NavDestination.SYLLABUS
+            }
+            "calendar" -> {
+                currentScreen = AppScreen.MAIN
+                currentNavDestination = NavDestination.CALENDAR
+            }
+            "admission" -> {
+                currentScreen = AppScreen.ADMISSION_CALENDAR
+            }
+            "notes" -> {
+                currentScreen = AppScreen.NOTES
+            }
+            "tools" -> {
+                currentScreen = AppScreen.MAIN
+                currentNavDestination = NavDestination.TOOLS
+            }
+            "notifications" -> {
+                currentScreen = AppScreen.NOTIFICATIONS
+            }
+            "profile" -> {
+                currentScreen = AppScreen.PROFILE
+            }
+            "analytics" -> {
+                currentScreen = AppScreen.PROGRESS_ANALYTICS
+            }
+            "settings" -> {
+                currentScreen = AppScreen.SETTINGS
+            }
+            else -> {
+                currentScreen = AppScreen.MAIN
+                currentNavDestination = NavDestination.HOME
+            }
+        }
+    }
+
+    LaunchedEffect(initialTargetRoute) {
+        if (!initialTargetRoute.isNullOrBlank()) {
+            navigateToRoute(initialTargetRoute)
+        }
+    }
 
     // Quick action trigger flags
     var requestAddSubjectOnSyllabus by remember { mutableStateOf(false) }
@@ -120,9 +177,16 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
 
     val isProfileLoaded by viewModel.isProfileLoaded.collectAsStateWithLifecycle()
 
+    var isSubjectDetailOpen by remember { mutableStateOf(false) }
+
+    LaunchedEffect(currentNavDestination) {
+        isSubjectDetailOpen = false
+    }
+
     StudyHubTheme(themeMode = currentThemeMode) {
-        Crossfade(targetState = currentScreen, label = "screen_transition") { screen ->
-            when (screen) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Crossfade(targetState = currentScreen, label = "screen_transition") { screen ->
+                when (screen) {
                 AppScreen.SPLASH -> {
                     SplashScreen(
                         isReady = isProfileLoaded,
@@ -166,10 +230,12 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                 AppScreen.MAIN -> {
                     Scaffold(
                         topBar = {
-                            StudyHubTopBar(
-                                unreadNotificationCount = unreadNotificationsCount,
-                                onNotificationClick = { currentScreen = AppScreen.NOTIFICATIONS }
-                            )
+                            if (!isSubjectDetailOpen || currentNavDestination != NavDestination.SYLLABUS) {
+                                StudyHubTopBar(
+                                    unreadNotificationCount = unreadNotificationsCount,
+                                    onNotificationClick = { currentScreen = AppScreen.NOTIFICATIONS }
+                                )
+                            }
                         },
                         bottomBar = {
                             StudyHubBottomNav(
@@ -234,7 +300,10 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                                         },
                                         onDeleteChapter = { viewModel.deleteChapter(it) },
                                         initialAddSubjectRequested = requestAddSubjectOnSyllabus,
-                                        onAddSubjectDismissed = { requestAddSubjectOnSyllabus = false }
+                                        onAddSubjectDismissed = { requestAddSubjectOnSyllabus = false },
+                                        onSubjectDetailStateChanged = { isOpen ->
+                                            isSubjectDetailOpen = isOpen
+                                        }
                                     )
                                 }
 
@@ -293,6 +362,8 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                     NotificationsScreen(
                         notifications = notifications,
                         onMarkAllRead = { viewModel.markAllNotificationsAsRead() },
+                        onDeleteNotification = { viewModel.deleteNotification(it) },
+                        onNavigateRoute = { route -> navigateToRoute(route) },
                         onBack = { currentScreen = AppScreen.MAIN }
                     )
                 }
@@ -357,6 +428,7 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                         currentThemeMode = currentThemeMode,
                         onThemeModeChanged = { viewModel.updateThemeMode(it) },
                         onSettingsUpdated = { viewModel.updateSettings(it) },
+                        onTriggerInstantNotification = { viewModel.triggerInstantTestNotification() },
                         onResetOnboarding = {
                             currentScreen = AppScreen.ONBOARDING
                         },
@@ -369,6 +441,12 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                     )
                 }
             }
+
+            InAppNotificationBanner(
+                onNavigateRoute = { route ->
+                    navigateToRoute(route)
+                }
+            )
         }
 
         // Notification rationale dialog per PRD Section 8.13 & Appendix B
@@ -398,6 +476,7 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                     }
                 }
             )
+        }
         }
     }
 }

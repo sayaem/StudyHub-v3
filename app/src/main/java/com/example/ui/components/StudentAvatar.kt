@@ -70,6 +70,42 @@ val AVATAR_LIST: List<AvatarInfo> = listOf(
         name = "Farhana Yasmin",
         quote = "Knowledge is the ultimate superpower.",
         drawableResId = R.drawable.avatar_girl_glasses_1792843655175
+    ),
+    AvatarInfo(
+        id = "avatar_7",
+        name = "Ayman Sadek",
+        quote = "Strive for excellence every day.",
+        drawableResId = R.drawable.avatar_boy_hoodie_1792846437539
+    ),
+    AvatarInfo(
+        id = "avatar_8",
+        name = "Anika Tabassum",
+        quote = "Dream big, work hard, stay focused.",
+        drawableResId = R.drawable.avatar_girl_bob_1792846453306
+    ),
+    AvatarInfo(
+        id = "avatar_9",
+        name = "Saad Hasan",
+        quote = "Music in ears, focus in mind.",
+        drawableResId = R.drawable.avatar_boy_headphones_1792846468284
+    ),
+    AvatarInfo(
+        id = "avatar_10",
+        name = "Nusrat Jahan",
+        quote = "Believe you can and you're halfway there.",
+        drawableResId = R.drawable.avatar_girl_braid_1792846481718
+    ),
+    AvatarInfo(
+        id = "avatar_11",
+        name = "Zayan Kabir",
+        quote = "Learn with passion and purpose.",
+        drawableResId = R.drawable.avatar_boy_smile_1792846495225
+    ),
+    AvatarInfo(
+        id = "avatar_12",
+        name = "Mehreen Chowdhury",
+        quote = "Success is built on daily habits.",
+        drawableResId = R.drawable.avatar_girl_scarf_1792846507998
     )
 )
 

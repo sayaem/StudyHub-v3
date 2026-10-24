@@ -459,9 +459,51 @@ class StudyHubViewModel(application: Application) : AndroidViewModel(application
     }
 
     // Notifications operations
+    fun initializeNotificationsOnLaunch() {
+        viewModelScope.launch {
+            val settings = repository.getAppSettingsSync()
+            com.example.notifications.NotificationScheduler.schedule3MinuteTestNotification(
+                context = getApplication(),
+                settings = settings
+            )
+        }
+    }
+
+    fun triggerInstantTestNotification() {
+        viewModelScope.launch {
+            com.example.notifications.NotificationScheduler.sendTestNotificationNow(getApplication())
+        }
+    }
+
+    fun deleteNotification(id: Long) {
+        viewModelScope.launch {
+            repository.deleteNotification(id)
+        }
+    }
+
     fun markAllNotificationsAsRead() {
         viewModelScope.launch {
             repository.markAllNotificationsAsRead()
+        }
+    }
+
+    fun updateNotificationSettings(
+        funnyRoastsEnabled: Boolean,
+        distractionNudgesEnabled: Boolean,
+        quietHoursStart: Int,
+        quietHoursEnd: Int,
+        maxDaily: Int
+    ) {
+        viewModelScope.launch {
+            val current = appSettings.value ?: AppSettingsEntity()
+            val updated = current.copy(
+                funnyRoastsEnabled = funnyRoastsEnabled,
+                distractionNudgesEnabled = distractionNudgesEnabled,
+                quietHoursStartHour = quietHoursStart,
+                quietHoursEndHour = quietHoursEnd,
+                maxDailyNotifications = maxDaily
+            )
+            repository.saveAppSettings(updated)
         }
     }
 

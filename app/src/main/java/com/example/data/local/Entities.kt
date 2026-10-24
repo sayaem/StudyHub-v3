@@ -122,5 +122,13 @@ data class AppSettingsEntity(
     val studyRemindersEnabled: Boolean = true,
     val dailyGoalRemindersEnabled: Boolean = true,
     val admissionUpdatesEnabled: Boolean = true,
-    val soundEnabled: Boolean = true
+    val funnyRoastsEnabled: Boolean = true,
+    val distractionNudgesEnabled: Boolean = true,
+    val soundEnabled: Boolean = true,
+    val quietHoursStartHour: Int = 22, // 10 PM
+    val quietHoursEndHour: Int = 7,    // 7 AM
+    val maxDailyNotifications: Int = 3,
+    val lastTestSessionId: String? = null,
+    val testSessionState: String? = null, // "PENDING", "DELIVERED", "CANCELLED"
+    val testSessionScheduledTime: Long = 0L
 )

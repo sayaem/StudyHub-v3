@@ -148,6 +148,8 @@ fun HomeScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(22.dp))
+                .clickable { onStartFocusClick() }
                 .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(22.dp)),
             shape = RoundedCornerShape(22.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -249,6 +251,8 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .weight(1f)
+                    .clip(RoundedCornerShape(18.dp))
+                    .clickable { onAddSubjectClick() }
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -283,6 +287,8 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .weight(1f)
+                    .clip(RoundedCornerShape(18.dp))
+                    .clickable { onAddAdmissionClick() }
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -452,6 +458,8 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable { onAddSubjectClick() }
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -541,6 +549,8 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { onTodayPlanClick() }
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -580,6 +590,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .clickable { onTodayPlanClick() }
                         .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
                     shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)

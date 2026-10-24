@@ -45,6 +45,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -86,13 +87,18 @@ fun SyllabusScreen(
     onAddChapter: (Long, String) -> Unit,
     onDeleteChapter: (ChapterEntity) -> Unit,
     initialAddSubjectRequested: Boolean = false,
-    onAddSubjectDismissed: () -> Unit = {}
+    onAddSubjectDismissed: () -> Unit = {},
+    onSubjectDetailStateChanged: (Boolean) -> Unit = {}
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("All") } // "All", "Compulsory", "Optional"
 
     var showAddSheet by remember { mutableStateOf(initialAddSubjectRequested) }
     var selectedSubjectDetail by remember { mutableStateOf<SubjectEntity?>(null) }
+
+    LaunchedEffect(selectedSubjectDetail) {
+        onSubjectDetailStateChanged(selectedSubjectDetail != null)
+    }
 
     val filteredSubjects = subjects.filter { sub ->
         val matchesCategory = selectedCategory == "All" || sub.category == selectedCategory

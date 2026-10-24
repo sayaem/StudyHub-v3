@@ -200,8 +200,24 @@ class StudyHubRepository(private val db: AppDatabase) {
         db.notificationDao().markAllAsRead()
     }
 
+    suspend fun deleteNotification(id: Long) {
+        db.notificationDao().deleteNotificationById(id)
+    }
+
+    suspend fun getRecentNotificationsSync(limit: Int = 20): List<NotificationItemEntity> {
+        return db.notificationDao().getRecentNotificationsSync(limit)
+    }
+
+    suspend fun getTodayNotificationCount(startOfDayMillis: Long): Int {
+        return db.notificationDao().getTodayNotificationCount(startOfDayMillis)
+    }
+
     // Settings
     val appSettings: Flow<AppSettingsEntity?> = db.settingsDao().getSettings()
+
+    suspend fun getAppSettingsSync(): AppSettingsEntity? {
+        return db.settingsDao().getSettingsSync()
+    }
 
     suspend fun saveAppSettings(settings: AppSettingsEntity) {
         db.settingsDao().upsertSettings(settings)

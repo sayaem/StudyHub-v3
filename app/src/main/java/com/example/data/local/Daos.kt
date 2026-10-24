@@ -134,6 +134,12 @@ interface NotificationDao {
     @Query("SELECT * FROM notification_items ORDER BY createdAt DESC")
     fun getAllNotifications(): Flow<List<NotificationItemEntity>>
 
+    @Query("SELECT * FROM notification_items ORDER BY createdAt DESC LIMIT :limit")
+    suspend fun getRecentNotificationsSync(limit: Int = 50): List<NotificationItemEntity>
+
+    @Query("SELECT COUNT(*) FROM notification_items WHERE createdAt >= :startOfDayTimestamp")
+    suspend fun getTodayNotificationCount(startOfDayTimestamp: Long): Int
+
     @Query("SELECT COUNT(*) FROM notification_items WHERE isRead = 0")
     fun getUnreadCount(): Flow<Int>
 
@@ -143,6 +149,12 @@ interface NotificationDao {
     @Query("UPDATE notification_items SET isRead = 1 WHERE isRead = 0")
     suspend fun markAllAsRead()
 
+    @Delete
+    suspend fun deleteNotification(item: NotificationItemEntity)
+
+    @Query("DELETE FROM notification_items WHERE id = :id")
+    suspend fun deleteNotificationById(id: Long)
+
     @Query("DELETE FROM notification_items")
     suspend fun clearAllNotifications()
 }
@@ -151,6 +163,9 @@ interface NotificationDao {
 interface SettingsDao {
     @Query("SELECT * FROM app_settings WHERE id = 1 LIMIT 1")
     fun getSettings(): Flow<AppSettingsEntity?>
+
+    @Query("SELECT * FROM app_settings WHERE id = 1 LIMIT 1")
+    suspend fun getSettingsSync(): AppSettingsEntity?
 
     @Upsert
     suspend fun upsertSettings(settings: AppSettingsEntity)
