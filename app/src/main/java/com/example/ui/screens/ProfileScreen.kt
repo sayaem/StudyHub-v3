@@ -19,13 +19,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.HelpOutline
-import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
@@ -66,8 +66,8 @@ fun ProfileScreen(
     onOpenAdmissionCalendar: () -> Unit,
     onOpenAnalytics: () -> Unit,
     onOpenNotes: () -> Unit,
-    onOpenMockPractice: () -> Unit,
-    onEditProfile: () -> Unit
+    onEditProfile: () -> Unit,
+    onBack: (() -> Unit)? = null
 ) {
     val name = userProfile?.displayName?.ifBlank { "Student" } ?: "Student"
     val avatarId = userProfile?.avatarId ?: "avatar_1"
@@ -94,13 +94,25 @@ fun ProfileScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Profile",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.onBackground
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (onBack != null) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 )
-            )
+            }
 
             IconButton(onClick = onOpenSettings) {
                 Icon(
@@ -235,14 +247,6 @@ fun ProfileScreen(
             title = "Progress & Review",
             subtitle = "Weekly trends and subject study time",
             onClick = onOpenAnalytics
-        )
-
-        ProfileMenuItem(
-            icon = Icons.Default.Quiz,
-            iconTint = Color(0xFFF97316),
-            title = "Mock Test & Practice",
-            subtitle = "Practice questions and test history",
-            onClick = onOpenMockPractice
         )
 
         ProfileMenuItem(

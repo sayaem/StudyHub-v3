@@ -99,10 +99,13 @@ fun StudentAvatar(
             .clip(CircleShape)
             .then(
                 if (onClick != null) {
-                    Modifier.clickable(onClick = onClick)
-                } else Modifier
-            )
-            .semantics { contentDescription = "Avatar ${info.name}" },
+                    Modifier
+                        .clickable(onClick = onClick)
+                        .semantics { contentDescription = "Open profile" }
+                } else {
+                    Modifier.semantics { contentDescription = "Avatar ${info.name}" }
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         Image(

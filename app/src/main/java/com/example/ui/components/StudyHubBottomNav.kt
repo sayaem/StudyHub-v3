@@ -18,14 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MenuBook
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,7 +53,7 @@ enum class NavDestination(
     SYLLABUS("Syllabus", Icons.Filled.MenuBook, Icons.Outlined.MenuBook),
     FOCUS("Focus", Icons.Filled.Timer, Icons.Outlined.Timer),
     CALENDAR("Calendar", Icons.Filled.CalendarToday, Icons.Outlined.CalendarToday),
-    PROFILE("Profile", Icons.Filled.Person, Icons.Outlined.Person)
+    TOOLS("Tools", Icons.Filled.GridView, Icons.Outlined.GridView)
 }
 
 @Composable
@@ -102,6 +103,7 @@ fun StudyHubBottomNav(
                         .weight(1f)
                         .clip(RoundedCornerShape(14.dp))
                         .clickable { onNavigate(destination) }
+                        .testTag("bottom_nav_${destination.name.lowercase()}")
                         .padding(vertical = 4.dp)
                 ) {
                     Box(

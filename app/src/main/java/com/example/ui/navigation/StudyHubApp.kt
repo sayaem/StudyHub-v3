@@ -36,7 +36,6 @@ import com.example.ui.screens.AdmissionCalendarScreen
 import com.example.ui.screens.CalendarScreen
 import com.example.ui.screens.FocusTimerScreen
 import com.example.ui.screens.HomeScreen
-import com.example.ui.screens.MockPracticeScreen
 import com.example.ui.screens.NotesScreen
 import com.example.ui.screens.NotificationsScreen
 import com.example.ui.screens.OnboardingScreen
@@ -45,6 +44,7 @@ import com.example.ui.screens.ProgressAnalyticsScreen
 import com.example.ui.screens.SettingsScreen
 import com.example.ui.screens.SplashScreen
 import com.example.ui.screens.SyllabusScreen
+import com.example.ui.screens.ToolsScreen
 import com.example.ui.theme.BrandTeal
 import com.example.ui.theme.StudyHubTheme
 import com.example.ui.theme.ThemeMode
@@ -53,10 +53,10 @@ enum class AppScreen {
     SPLASH,
     ONBOARDING,
     MAIN,
+    PROFILE,
     NOTIFICATIONS,
     ADMISSION_CALENDAR,
     PROGRESS_ANALYTICS,
-    MOCK_PRACTICE,
     NOTES,
     SETTINGS
 }
@@ -213,7 +213,7 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                                             currentNavDestination = NavDestination.SYLLABUS
                                         },
                                         onAvatarClick = {
-                                            currentNavDestination = NavDestination.PROFILE
+                                            currentScreen = AppScreen.PROFILE
                                         }
                                     )
                                 }
@@ -274,17 +274,13 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                                     )
                                 }
 
-                                NavDestination.PROFILE -> {
-                                    ProfileScreen(
-                                        userProfile = userProfile,
-                                        completedChaptersCount = completedChaptersCount,
-                                        totalStudyHours = totalHoursFocused,
-                                        onOpenSettings = { currentScreen = AppScreen.SETTINGS },
+                                NavDestination.TOOLS -> {
+                                    ToolsScreen(
                                         onOpenAdmissionCalendar = { currentScreen = AppScreen.ADMISSION_CALENDAR },
                                         onOpenAnalytics = { currentScreen = AppScreen.PROGRESS_ANALYTICS },
                                         onOpenNotes = { currentScreen = AppScreen.NOTES },
-                                        onOpenMockPractice = { currentScreen = AppScreen.MOCK_PRACTICE },
-                                        onEditProfile = { currentScreen = AppScreen.ONBOARDING }
+                                        onOpenSettings = { currentScreen = AppScreen.SETTINGS },
+                                        onOpenNotifications = { currentScreen = AppScreen.NOTIFICATIONS }
                                     )
                                 }
                             }
@@ -328,9 +324,17 @@ fun StudyHubApp(viewModel: StudyHubViewModel) {
                     )
                 }
 
-                AppScreen.MOCK_PRACTICE -> {
+                AppScreen.PROFILE -> {
                     BackHandler { currentScreen = AppScreen.MAIN }
-                    MockPracticeScreen(
+                    ProfileScreen(
+                        userProfile = userProfile,
+                        completedChaptersCount = completedChaptersCount,
+                        totalStudyHours = totalHoursFocused,
+                        onOpenSettings = { currentScreen = AppScreen.SETTINGS },
+                        onOpenAdmissionCalendar = { currentScreen = AppScreen.ADMISSION_CALENDAR },
+                        onOpenAnalytics = { currentScreen = AppScreen.PROGRESS_ANALYTICS },
+                        onOpenNotes = { currentScreen = AppScreen.NOTES },
+                        onEditProfile = { currentScreen = AppScreen.ONBOARDING },
                         onBack = { currentScreen = AppScreen.MAIN }
                     )
                 }
