@@ -288,7 +288,13 @@ fun HomeScreen(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(18.dp))
-                    .clickable { onAddAdmissionClick() }
+                    .clickable {
+                        if (admissionTargets.isNotEmpty()) {
+                            onTodayPlanClick() // Admission Calendar
+                        } else {
+                            onAddAdmissionClick()
+                        }
+                    }
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
