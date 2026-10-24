@@ -347,9 +347,7 @@ fun StudyHubApp(
                                     ToolsScreen(
                                         onOpenAdmissionCalendar = { currentScreen = AppScreen.ADMISSION_CALENDAR },
                                         onOpenAnalytics = { currentScreen = AppScreen.PROGRESS_ANALYTICS },
-                                        onOpenNotes = { currentScreen = AppScreen.NOTES },
-                                        onOpenSettings = { currentScreen = AppScreen.SETTINGS },
-                                        onOpenNotifications = { currentScreen = AppScreen.NOTIFICATIONS }
+                                        onOpenNotes = { currentScreen = AppScreen.NOTES }
                                     )
                                 }
                             }
@@ -428,6 +426,11 @@ fun StudyHubApp(
                         currentThemeMode = currentThemeMode,
                         onThemeModeChanged = { viewModel.updateThemeMode(it) },
                         onSettingsUpdated = { viewModel.updateSettings(it) },
+                        onOpenNotifications = { currentScreen = AppScreen.NOTIFICATIONS },
+                        onSetFrequencyLevel = { viewModel.setNotificationFrequencyLevel(it) },
+                        onSnoozeOneHour = { viewModel.snoozeNotificationsForOneHour() },
+                        onSnoozeTomorrow = { viewModel.snoozeNotificationsUntilTomorrow() },
+                        onCancelSnooze = { viewModel.cancelSnooze() },
                         onTriggerInstantNotification = { viewModel.triggerInstantTestNotification() },
                         onResetOnboarding = {
                             currentScreen = AppScreen.ONBOARDING

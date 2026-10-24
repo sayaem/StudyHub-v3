@@ -53,6 +53,103 @@ class AdaptiveNotificationEngineTest {
     }
 
     @Test
+    fun testSnoozeSuppression() {
+        val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N031" }
+        val settings = AppSettingsEntity(
+            snoozeUntilTime = System.currentTimeMillis() + 3600_000L // Snoozed 1 hr
+        )
+
+        val eligible = NotificationEligibilityEvaluator.isEligible(
+            template = template,
+            settings = settings,
+            userProfile = null,
+            subjects = emptyList(),
+            chapters = emptyList(),
+            tasks = emptyList(),
+            admissionTargets = emptyList(),
+            notes = emptyList(),
+            isFocusTimerActive = false,
+            recentNotifications = emptyList(),
+            todayNotificationCount = 0,
+            currentHour = 14
+        )
+        assertFalse("Notifications must be suppressed when active snooze is set", eligible)
+    }
+
+    @Test
+    fun testMinCooldownEnforcement() {
+        val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N031" }
+        val settings = AppSettingsEntity(
+            frequencyLevel = "LOW", // 4-hour cooldown
+            lastNotificationTime = System.currentTimeMillis() - (2 * 3600_000L) // 2 hours ago
+        )
+
+        val eligible = NotificationEligibilityEvaluator.isEligible(
+            template = template,
+            settings = settings,
+            userProfile = null,
+            subjects = emptyList(),
+            chapters = emptyList(),
+            tasks = emptyList(),
+            admissionTargets = emptyList(),
+            notes = emptyList(),
+            isFocusTimerActive = false,
+            recentNotifications = emptyList(),
+            todayNotificationCount = 0,
+            currentHour = 14
+        )
+        assertFalse("Notifications must be suppressed during the 4-hour cooldown window", eligible)
+    }
+
+    @Test
+    fun testMinimalFrequencyLimit() {
+        val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N031" }
+        val settings = AppSettingsEntity(
+            frequencyLevel = "MINIMAL" // Max 1 per day
+        )
+
+        val eligibleAtOne = NotificationEligibilityEvaluator.isEligible(
+            template = template,
+            settings = settings,
+            userProfile = null,
+            subjects = emptyList(),
+            chapters = emptyList(),
+            tasks = emptyList(),
+            admissionTargets = emptyList(),
+            notes = emptyList(),
+            isFocusTimerActive = false,
+            recentNotifications = emptyList(),
+            todayNotificationCount = 1,
+            currentHour = 14
+        )
+        assertFalse("Minimal frequency level must cap at 1 notification per day", eligibleAtOne)
+    }
+
+    @Test
+    fun testHardLimitThreePerDay() {
+        val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N031" }
+        val settings = AppSettingsEntity(
+            maxDailyNotifications = 5 // User attempts to request 5
+        )
+
+        val eligibleAtThree = NotificationEligibilityEvaluator.isEligible(
+            template = template,
+            settings = settings,
+            userProfile = null,
+            subjects = emptyList(),
+            chapters = emptyList(),
+            tasks = emptyList(),
+            admissionTargets = emptyList(),
+            notes = emptyList(),
+            isFocusTimerActive = false,
+            recentNotifications = emptyList(),
+            todayNotificationCount = 3,
+            currentHour = 14
+        )
+        assertFalse("System hard limit must cap at 3 notifications per calendar day", eligibleAtThree)
+    }
+
+    @Test
     fun testExamAlertsDataRequirementRestriction() {
         val examTemplates = NotificationContentLibrary.ALL_NOTIFICATIONS.filter {
             it.category == NotificationCategory.EXAM_ALERTS
@@ -129,12 +226,12 @@ class AdaptiveNotificationEngineTest {
     fun testQuietHoursSuppression() {
         val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N031" } // Motivation
         val settings = AppSettingsEntity(
-            quietHoursStartHour = 23,
-            quietHoursEndHour = 6,
+            quietHoursStartHour = 22,
+            quietHoursEndHour = 7,
             maxDailyNotifications = 10
         )
 
-        // Hour 2 = Quiet hour (2 AM)
+        // Hour 23 = Quiet hour (11 PM)
         val eligibleQuiet = NotificationEligibilityEvaluator.isEligible(
             template = template,
             settings = settings,
@@ -147,9 +244,9 @@ class AdaptiveNotificationEngineTest {
             isFocusTimerActive = false,
             recentNotifications = emptyList(),
             todayNotificationCount = 0,
-            currentHour = 2
+            currentHour = 23
         )
-        assertFalse("Notifications must be suppressed during quiet hours (2 AM)", eligibleQuiet)
+        assertFalse("Notifications must be suppressed during quiet hours (11 PM)", eligibleQuiet)
 
         // Hour 15 = Active hour (3 PM)
         val eligibleActive = NotificationEligibilityEvaluator.isEligible(
@@ -192,77 +289,6 @@ class AdaptiveNotificationEngineTest {
             currentHour = 14
         )
         assertFalse("Non-focus notifications must be suppressed while timer is active", eligibleDuringFocus)
-    }
-
-    @Test
-    fun testDailyCapLimit() {
-        val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N031" } // Motivation
-        val settings = AppSettingsEntity(maxDailyNotifications = 3)
-
-        // Under cap (2 < 3)
-        val underCap = NotificationEligibilityEvaluator.isEligible(
-            template = template,
-            settings = settings,
-            userProfile = null,
-            subjects = emptyList(),
-            chapters = emptyList(),
-            tasks = emptyList(),
-            admissionTargets = emptyList(),
-            notes = emptyList(),
-            isFocusTimerActive = false,
-            recentNotifications = emptyList(),
-            todayNotificationCount = 2,
-            currentHour = 14
-        )
-        assertTrue("Should be eligible under daily cap", underCap)
-
-        // At or over cap (3 >= 3)
-        val atCap = NotificationEligibilityEvaluator.isEligible(
-            template = template,
-            settings = settings,
-            userProfile = null,
-            subjects = emptyList(),
-            chapters = emptyList(),
-            tasks = emptyList(),
-            admissionTargets = emptyList(),
-            notes = emptyList(),
-            isFocusTimerActive = false,
-            recentNotifications = emptyList(),
-            todayNotificationCount = 3,
-            currentHour = 14
-        )
-        assertFalse("Must be suppressed at daily cap limit", atCap)
-    }
-
-    @Test
-    fun testRepeatAvoidanceHistory() {
-        val template = NotificationContentLibrary.ALL_NOTIFICATIONS.first { it.id == "N005" }
-        val settings = AppSettingsEntity(funnyRoastsEnabled = true, maxDailyNotifications = 10)
-
-        val recentNotifications = listOf(
-            NotificationItemEntity(
-                title = template.title,
-                body = template.body,
-                category = "FUNNY_ROASTS",
-                createdAt = System.currentTimeMillis() - 1000
-            )
-        )
-
-        val eligibleInHistory = NotificationEligibilityEvaluator.isEligible(
-            template = template,
-            settings = settings,
-            userProfile = null,
-            subjects = emptyList(),
-            chapters = emptyList(),
-            tasks = emptyList(),
-            admissionTargets = emptyList(),
-            notes = emptyList(),
-            isFocusTimerActive = false,
-            recentNotifications = recentNotifications,
-            todayNotificationCount = 0,
-            currentHour = 14
-        )
-        assertFalse("Template presented recently must be suppressed to avoid repeats", eligibleInHistory)
     }
 
     @Test

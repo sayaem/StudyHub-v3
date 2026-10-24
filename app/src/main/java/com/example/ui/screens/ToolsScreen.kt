@@ -46,8 +46,6 @@ fun ToolsScreen(
     onOpenAdmissionCalendar: () -> Unit,
     onOpenAnalytics: () -> Unit,
     onOpenNotes: () -> Unit,
-    onOpenSettings: () -> Unit,
-    onOpenNotifications: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -104,28 +102,6 @@ fun ToolsScreen(
             subtitle = "Formulas, key concepts, summaries and quick revisions",
             testTag = "tool_notes",
             onClick = onOpenNotes
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        ToolCardItem(
-            icon = Icons.Outlined.Notifications,
-            iconTint = Color(0xFFF59E0B),
-            title = "Notification Center",
-            subtitle = "Study session reminders, deadline alerts & system notices",
-            testTag = "tool_notifications",
-            onClick = onOpenNotifications
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        ToolCardItem(
-            icon = Icons.Default.Settings,
-            iconTint = Color(0xFF64748B),
-            title = "Settings & Preferences",
-            subtitle = "Theme appearance, daily study goal, reminders & data backup",
-            testTag = "tool_settings",
-            onClick = onOpenSettings
         )
 
         Spacer(modifier = Modifier.height(28.dp))

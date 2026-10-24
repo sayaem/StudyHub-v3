@@ -18,43 +18,46 @@ object NotificationScheduler {
         delaySeconds: Long = DEFAULT_TEST_DELAY_SECONDS,
         forceNewSession: Boolean = false
     ): String {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // Prevent duplicate test scheduling if session is already PENDING and valid
-        if (!forceNewSession && settings != null && settings.testSessionState == "PENDING") {
-            val now = System.currentTimeMillis()
-            if (now < settings.testSessionScheduledTime + 300_000L) {
-                return settings.lastTestSessionId ?: "existing_pending_session"
-            }
-        }
-
-        val sessionId = "test_session_${System.currentTimeMillis()}"
-        val triggerTimeMs = System.currentTimeMillis() + (delaySeconds * 1000L)
-
-        val intent = Intent(context, StudyHubNotificationReceiver::class.java).apply {
-            action = StudyHubNotificationReceiver.ACTION_TRIGGER_NOTIFICATION
-            putExtra(StudyHubNotificationReceiver.EXTRA_NOTIFICATION_ID, TEST_NOTIFICATION_ID)
-            putExtra(StudyHubNotificationReceiver.EXTRA_TITLE, "StudyHub 3-Min Test: Motivation Check! 🚀")
-            putExtra(StudyHubNotificationReceiver.EXTRA_BODY, "3 minutes of study time passed! Time to tackle a chapter or start a focus session.")
-            putExtra(StudyHubNotificationReceiver.EXTRA_ACTION_ROUTE, "FOCUS")
-            putExtra(StudyHubNotificationReceiver.EXTRA_CATEGORY, "STUDY")
-            putExtra(StudyHubNotificationReceiver.EXTRA_IS_TEST, true)
-        }
-
-        val pendingFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            TEST_NOTIFICATION_ID,
-            intent,
-            pendingFlags
-        )
-
         try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            if (!forceNewSession && settings?.isDevTestModeEnabled != true) {
+                return "test_disabled_in_prod"
+            }
+
+            if (!forceNewSession && settings != null && settings.testSessionState == "SCHEDULED") {
+                val now = System.currentTimeMillis()
+                if (now < settings.testSessionScheduledTime + 300_000L) {
+                    return settings.lastTestSessionId ?: "existing_pending_session"
+                }
+            }
+
+            val sessionId = "test_session_${System.currentTimeMillis()}"
+            val triggerTimeMs = System.currentTimeMillis() + (delaySeconds * 1000L)
+
+            val intent = Intent(context, StudyHubNotificationReceiver::class.java).apply {
+                action = StudyHubNotificationReceiver.ACTION_TRIGGER_NOTIFICATION
+                putExtra(StudyHubNotificationReceiver.EXTRA_NOTIFICATION_ID, TEST_NOTIFICATION_ID)
+                putExtra(StudyHubNotificationReceiver.EXTRA_TITLE, "StudyHub 3-Min Test: Motivation Check! 🚀")
+                putExtra(StudyHubNotificationReceiver.EXTRA_BODY, "3 minutes of study time passed! Time to tackle a chapter or start a focus session.")
+                putExtra(StudyHubNotificationReceiver.EXTRA_ACTION_ROUTE, "FOCUS")
+                putExtra(StudyHubNotificationReceiver.EXTRA_CATEGORY, "STUDY")
+                putExtra(StudyHubNotificationReceiver.EXTRA_IS_TEST, true)
+            }
+
+            val pendingFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                TEST_NOTIFICATION_ID,
+                intent,
+                pendingFlags
+            )
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
@@ -68,11 +71,12 @@ object NotificationScheduler {
                     pendingIntent
                 )
             }
+
+            return sessionId
         } catch (e: Exception) {
             e.printStackTrace()
+            return "error: ${e.localizedMessage ?: e.javaClass.simpleName}"
         }
-
-        return sessionId
     }
 
     fun sendTestNotificationNow(context: Context) {

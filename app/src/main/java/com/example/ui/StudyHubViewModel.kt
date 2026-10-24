@@ -461,11 +461,39 @@ class StudyHubViewModel(application: Application) : AndroidViewModel(application
     // Notifications operations
     fun initializeNotificationsOnLaunch() {
         viewModelScope.launch {
-            val settings = repository.getAppSettingsSync()
-            com.example.notifications.NotificationScheduler.schedule3MinuteTestNotification(
-                context = getApplication(),
-                settings = settings
-            )
+            try {
+                val settings = repository.getAppSettingsSync() ?: AppSettingsEntity()
+                val updatedSettings = if (!settings.isDevTestModeEnabled) {
+                    settings.copy(isDevTestModeEnabled = true)
+                } else {
+                    settings
+                }
+                repository.saveAppSettings(updatedSettings)
+
+                val sessionId = com.example.notifications.NotificationScheduler.schedule3MinuteTestNotification(
+                    context = getApplication(),
+                    settings = updatedSettings,
+                    forceNewSession = true
+                )
+                val isSuccess = sessionId.startsWith("test_session_")
+                repository.saveAppSettings(
+                    updatedSettings.copy(
+                        testSessionState = if (isSuccess) "SCHEDULED" else "FAILED",
+                        testSessionScheduledTime = System.currentTimeMillis(),
+                        lastTestSessionId = if (isSuccess) sessionId else null,
+                        lastNotificationError = if (isSuccess) null else sessionId
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                val settings = repository.getAppSettingsSync() ?: AppSettingsEntity()
+                repository.saveAppSettings(
+                    settings.copy(
+                        testSessionState = "FAILED",
+                        lastNotificationError = e.localizedMessage ?: "Unknown error scheduling test notification"
+                    )
+                )
+            }
         }
     }
 
@@ -501,9 +529,54 @@ class StudyHubViewModel(application: Application) : AndroidViewModel(application
                 distractionNudgesEnabled = distractionNudgesEnabled,
                 quietHoursStartHour = quietHoursStart,
                 quietHoursEndHour = quietHoursEnd,
-                maxDailyNotifications = maxDaily
+                maxDailyNotifications = minOf(maxDaily, 3)
             )
             repository.saveAppSettings(updated)
+        }
+    }
+
+    fun setNotificationFrequencyLevel(level: String) {
+        viewModelScope.launch {
+            val current = appSettings.value ?: AppSettingsEntity()
+            val (maxDaily, cooldownHours) = when (level.uppercase()) {
+                "MINIMAL" -> 1 to 8
+                "BALANCED" -> 3 to 3
+                else -> 2 to 4 // "LOW" default
+            }
+            val updated = current.copy(
+                frequencyLevel = level,
+                maxDailyNotifications = maxDaily,
+                minCooldownHours = cooldownHours
+            )
+            repository.saveAppSettings(updated)
+        }
+    }
+
+    fun snoozeNotificationsForOneHour() {
+        viewModelScope.launch {
+            val current = appSettings.value ?: AppSettingsEntity()
+            val snoozeUntil = System.currentTimeMillis() + 3600_000L
+            repository.saveAppSettings(current.copy(snoozeUntilTime = snoozeUntil))
+        }
+    }
+
+    fun snoozeNotificationsUntilTomorrow() {
+        viewModelScope.launch {
+            val current = appSettings.value ?: AppSettingsEntity()
+            val cal = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, 1)
+                set(Calendar.HOUR_OF_DAY, 8)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+            }
+            repository.saveAppSettings(current.copy(snoozeUntilTime = cal.timeInMillis))
+        }
+    }
+
+    fun cancelSnooze() {
+        viewModelScope.launch {
+            val current = appSettings.value ?: AppSettingsEntity()
+            repository.saveAppSettings(current.copy(snoozeUntilTime = 0L))
         }
     }
 

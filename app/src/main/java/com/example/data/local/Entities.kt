@@ -127,8 +127,15 @@ data class AppSettingsEntity(
     val soundEnabled: Boolean = true,
     val quietHoursStartHour: Int = 22, // 10 PM
     val quietHoursEndHour: Int = 7,    // 7 AM
-    val maxDailyNotifications: Int = 3,
+    val frequencyLevel: String = "LOW", // "MINIMAL" (1/day), "LOW" (2/day), "BALANCED" (3/day)
+    val maxDailyNotifications: Int = 2, // Default 2, hard limit 3
+    val minCooldownHours: Int = 4,      // Minimum 4-hour cooldown
+    val lastNotificationTime: Long = 0L,
+    val consecutiveIgnoredCount: Int = 0,
+    val snoozeUntilTime: Long = 0L,
+    val isDevTestModeEnabled: Boolean = true,
     val lastTestSessionId: String? = null,
-    val testSessionState: String? = null, // "PENDING", "DELIVERED", "CANCELLED"
-    val testSessionScheduledTime: Long = 0L
+    val testSessionState: String? = null, // "SCHEDULED", "PENDING", "DELIVERED", "CANCELLED", "FAILED"
+    val testSessionScheduledTime: Long = 0L,
+    val lastNotificationError: String? = null
 )

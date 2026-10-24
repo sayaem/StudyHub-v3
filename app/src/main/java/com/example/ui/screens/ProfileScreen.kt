@@ -234,34 +234,10 @@ fun ProfileScreen(
 
         // Menu items
         ProfileMenuItem(
-            icon = Icons.Default.School,
-            iconTint = BrandTeal,
-            title = "Admission Calendar",
-            subtitle = "Track universities, deadlines & exam dates",
-            onClick = onOpenAdmissionCalendar
-        )
-
-        ProfileMenuItem(
-            icon = Icons.Default.BarChart,
-            iconTint = Color(0xFF2563EB),
-            title = "Progress & Review",
-            subtitle = "Weekly trends and subject study time",
-            onClick = onOpenAnalytics
-        )
-
-        ProfileMenuItem(
-            icon = Icons.Default.Description,
-            iconTint = Color(0xFF8B5CF6),
-            title = "Notes & Study Material",
-            subtitle = "Formulas, key concepts and summaries",
-            onClick = onOpenNotes
-        )
-
-        ProfileMenuItem(
             icon = Icons.Default.Settings,
-            iconTint = TextSecondary,
+            iconTint = BrandTeal,
             title = "Settings",
-            subtitle = "Appearance, reminders, and data controls",
+            subtitle = "Appearance, notifications, reminders, and data controls",
             onClick = onOpenSettings
         )
 

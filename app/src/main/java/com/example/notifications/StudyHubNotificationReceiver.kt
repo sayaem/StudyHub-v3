@@ -48,13 +48,14 @@ class StudyHubNotificationReceiver : BroadcastReceiver() {
                 )
                 db.notificationDao().insertNotification(notificationItem)
 
-                // 2. If test notification, update settings state to DELIVERED
-                if (isTest) {
-                    val settings = db.settingsDao().getSettings()
-                    // Get current settings or default
-                    val currentSettings = db.settingsDao().getSettings()
-                    // update test state in settings
-                }
+                // 2. Update settings: lastNotificationTime for cooldown tracking
+                val currentSettings = db.settingsDao().getSettingsSync() ?: com.example.data.local.AppSettingsEntity()
+                db.settingsDao().upsertSettings(
+                    currentSettings.copy(
+                        lastNotificationTime = System.currentTimeMillis(),
+                        testSessionState = if (isTest) "DELIVERED" else currentSettings.testSessionState
+                    )
+                )
 
                 // 3. Post system notification
                 val notificationManager = StudyHubNotificationManager(context)
